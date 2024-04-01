@@ -1,14 +1,25 @@
+# Dockerfile
+
 FROM ubuntu:latest
 
-# Install cron
-RUN apt-get update
-RUN apt-get install cron
+# Install cron and Python
+RUN apt-get update && \
+    apt-get install -y cron python3.11 python3-venv
+
+# Create a directory to store the virtual environment
+RUN mkdir /venv
+
+# Copy the .venv directory from your host machine to the container
+COPY ./.venv /venv
+
+# Copy the script.sh and myscript.py files into the container
+COPY script.sh /script.sh
+COPY myscript.py /myscript.py
 
 # Add crontab file in the cron directory
 ADD crontab /etc/cron.d/simple-cron
 
-# Add shell script and grant execution rights
-ADD script.sh /script.sh
+# Grant execution rights to the shell script
 RUN chmod +x /script.sh
 
 # Give execution rights on the cron job
